@@ -5,8 +5,12 @@ function TaskComponent({ tasks, deleteTask }) {
   const [sorted, setSorted] = useState(false);
 
   const filteredTasks = tasks
-    .filter((task) => task.toLowerCase().includes(search.toLowerCase()))
-    .sort((a, b) => (sorted ? a.localeCompare(b) : 0));
+    .filter((task) =>
+      (task.taskName + ' ' + task.taskDescription)
+        .toLowerCase()
+        .includes(search.toLowerCase())
+    )
+    .sort((a, b) => (sorted ? a.taskName.localeCompare(b.taskName) : 0));
 
   return (
     <div>
@@ -22,15 +26,12 @@ function TaskComponent({ tasks, deleteTask }) {
       <button onClick={() => setSorted(true)}>Sort by Name</button>
 
       <ul>
-        {filteredTasks.map((task, index) => (
-          <li key={index}>
-            {task}
+        {filteredTasks.map((task) => (
+          <li key={task.id}>
+            <strong>{task.taskName}</strong> — {task.taskDescription}
             <button
-              onClick={() => {
-                if (window.confirm('Delete this task?')) {
-                  deleteTask(task); // delete by value, not index
-                }
-              }}
+              onClick={() => deleteTask(task.id)}
+              style={{ marginLeft: '8px' }}
             >
               Delete
             </button>
